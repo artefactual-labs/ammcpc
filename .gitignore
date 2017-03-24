@@ -1,0 +1,9 @@
+env2.7/
+env3.4/
+ammcpc.egg-info/
+build/
+dist/
+.cache/
+.eggs/
+__pycache__/
+*.pyc
