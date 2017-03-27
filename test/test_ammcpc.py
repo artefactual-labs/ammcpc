@@ -63,6 +63,8 @@ class TestMediaConchPolicyCheckerCommand(TestCase):
         output = json.loads(output[0])
         assert exitcode == 0
         assert output['eventOutcomeInformation'] == 'fail'
+        with open(POLICY_XSL_PATH) as filei:
+            assert output['policy'] == filei.read()
         policy_checker = MediaConchPolicyCheckerCommand(
             policy_file_path=POLICY_XML_PATH)
         with Capturing() as output:
@@ -70,6 +72,8 @@ class TestMediaConchPolicyCheckerCommand(TestCase):
         output = json.loads(output[0])
         assert exitcode == 0
         assert output['eventOutcomeInformation'] == 'fail'
+        with open(POLICY_XML_PATH) as filei:
+            assert output['policy'] == filei.read()
 
     def test_check_bad_file_str_pol(self):
         """Same as ``test_check_bad_file`` except that the policy is passed as
@@ -84,6 +88,7 @@ class TestMediaConchPolicyCheckerCommand(TestCase):
         output = json.loads(output[0])
         assert exitcode == 0
         assert output['eventOutcomeInformation'] == 'fail'
+        assert output['policy'] == policy
         with open(POLICY_XML_PATH) as filei:
             policy = filei.read()
         policy_checker = MediaConchPolicyCheckerCommand(
@@ -93,6 +98,7 @@ class TestMediaConchPolicyCheckerCommand(TestCase):
         output = json.loads(output[0])
         assert exitcode == 0
         assert output['eventOutcomeInformation'] == 'fail'
+        assert output['policy'] == policy
 
     def test_check_good_file(self):
         """Expect a policy check on a passing file to return a 0 exit code and
@@ -106,6 +112,8 @@ class TestMediaConchPolicyCheckerCommand(TestCase):
         output = json.loads(output[0])
         assert exitcode == 0
         assert output['eventOutcomeInformation'] == 'pass'
+        with open(POLICY_XSL_PATH) as filei:
+            assert output['policy'] == filei.read()
         policy_checker = MediaConchPolicyCheckerCommand(
             policy_file_path=POLICY_XML_PATH)
         with Capturing() as output:
@@ -113,6 +121,8 @@ class TestMediaConchPolicyCheckerCommand(TestCase):
         output = json.loads(output[0])
         assert exitcode == 0
         assert output['eventOutcomeInformation'] == 'pass'
+        with open(POLICY_XML_PATH) as filei:
+            assert output['policy'] == filei.read()
 
     def test_check_good_file_str_pol(self):
         """Same as ``test_check_good_file`` except that the policy is passed as
@@ -127,6 +137,7 @@ class TestMediaConchPolicyCheckerCommand(TestCase):
         output = json.loads(output[0])
         assert exitcode == 0
         assert output['eventOutcomeInformation'] == 'pass'
+        assert output['policy'] == policy
         with open(POLICY_XML_PATH) as filei:
             policy = filei.read()
         policy_checker = MediaConchPolicyCheckerCommand(
@@ -136,6 +147,7 @@ class TestMediaConchPolicyCheckerCommand(TestCase):
         output = json.loads(output[0])
         assert exitcode == 0
         assert output['eventOutcomeInformation'] == 'pass'
+        assert output['policy'] == policy
 
     def test_no_policy(self):
         """Expect a 1 exit code and a fail outcome when the policy file does

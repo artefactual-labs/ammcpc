@@ -88,7 +88,8 @@ class MediaConchPolicyCheckerCommand(object):
             print(json.dumps({
                 'eventOutcomeInformation': info,
                 'eventOutcomeDetailNote': detail,
-                'policy': self.policy_file_name,
+                'policy': self.policy,
+                'policyFileName': self.policy_file_name,
                 'stdout': stdout
             }))
             return SUCCESS_CODE
@@ -102,8 +103,11 @@ class MediaConchPolicyCheckerCommand(object):
                     'There is no policy file at {}'.format(
                         self._policy_file_path))
             self.policy_file_name = os.path.basename(self._policy_file_path)
+            with open(self._policy_file_path) as filei:
+                self.policy = filei.read()
         elif self._policy and self._policy_file_name:
             self.policy_file_name = self._policy_file_name
+            self.policy = self._policy
         else:
             raise MediaConchException(
                 'You must supply the path to a MediaConch policy file or'
@@ -208,12 +212,14 @@ class MediaConchPolicyCheckerCommand(object):
     def _error(self, exc):
         try:
             pfn = self.policy_file_name
+            pol = self.policy
         except AttributeError:
-            pfn = None
+            pfn = pol = None
         print(json.dumps({
             'eventOutcomeInformation': 'fail',
             'eventOutcomeDetailNote': str(exc),
-            'policy': pfn,
+            'policy': pol,
+            'policyFileName': pfn,
             'stdout': None
         }), file=sys.stderr)
         return ERROR_CODE
