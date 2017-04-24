@@ -185,7 +185,8 @@ class MediaConchPolicyCheckerCommand(object):
     def _get_evt_out_inf_detail_v_0_1(self, policy_checks):
         failed_policy_checks = []
         passed_policy_checks = []
-        for name, (out, fie, act, rea) in policy_checks['policy_checks'].items():
+        for name, (out, fie, act, rea) in \
+                policy_checks['policy_checks'].items():
             if out == "pass":
                 passed_policy_checks.append(name)
             else:

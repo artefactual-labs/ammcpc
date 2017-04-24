@@ -7,6 +7,12 @@ MediaConch tool which takes a file and a MediaConch policy file as input and
 prints to stdout a JSON object indicating, in a way that Archivematica likes,
 whether the file passes the policy check.
 
+
+.. class:: no-web no-pdf
+
+|build|
+
+
 Install with Pip::
 
     $ pip install ammcpc
@@ -37,8 +43,11 @@ System dependencies:
 
 - MediaConch version 16.12
 
-To run the tests, make sure pytest is installed, then::
+To run the tests, make sure tox is installed, then::
 
-    $ cd test/
-    $ pytest
+    $ tox
 
+
+.. |build|  image:: https://travis-ci.org/artefactual-labs/ammcpc.svg?branch=master
+    :target: https://travis-ci.org/artefactual-labs/ammcpc
+    :alt: Build status of the master branch

@@ -8,7 +8,6 @@ try:
 except ImportError:
     from io import StringIO
 
-sys.path.insert(0, os.path.abspath('..'))
 from ammcpc.ammcpc import MediaConchPolicyCheckerCommand
 
 
@@ -53,8 +52,8 @@ class TestMediaConchPolicyCheckerCommand(TestCase):
 
     def test_check_bad_file(self):
         """Expect a policy check on a failing file to return a 0 exit code and
-        print to stdout a JSON object with a 'eventOutcomeInformation' attribute
-        whose value is 'fail'.
+        print to stdout a JSON object with a 'eventOutcomeInformation'
+        attribute whose value is 'fail'.
         """
         policy_checker = MediaConchPolicyCheckerCommand(
             policy_file_path=POLICY_XSL_PATH)
@@ -102,8 +101,8 @@ class TestMediaConchPolicyCheckerCommand(TestCase):
 
     def test_check_good_file(self):
         """Expect a policy check on a passing file to return a 0 exit code and
-        print to stdout a JSON object with a 'eventOutcomeInformation' attribute
-        whose value is 'pass'.
+        print to stdout a JSON object with a 'eventOutcomeInformation'
+        attribute whose value is 'pass'.
         """
         policy_checker = MediaConchPolicyCheckerCommand(
             policy_file_path=POLICY_XSL_PATH)
@@ -160,4 +159,5 @@ class TestMediaConchPolicyCheckerCommand(TestCase):
         output = json.loads(output[0])
         assert exitcode == 1
         assert output['eventOutcomeInformation'] == 'fail'
-        assert output['eventOutcomeDetailNote'] == 'There is no policy file at fake/policy/path'
+        assert output['eventOutcomeDetailNote'] == \
+            'There is no policy file at fake/policy/path'
