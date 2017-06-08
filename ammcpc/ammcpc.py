@@ -159,38 +159,36 @@ class MediaConchPolicyCheckerCommand(object):
         return self._get_evt_out_inf_detail_v_0_1(policy_checks)
 
     def _get_evt_out_inf_detail_v_0_3(self, policy_checks):
-        failed_policy_checks = []
-        passed_policy_checks = []
+        failed_policy_checks = set()
+        passed_policy_checks = set()
         info = 'fail'
         if policy_checks['root_policy'][1] == 'pass':
             info = 'pass'
         for name, outcome in policy_checks['policies']:
             if outcome == "pass":
-                passed_policy_checks.append(name)
+                passed_policy_checks.add(name)
             else:
-                failed_policy_checks.append('failed policy/rule: %s' % name)
+                failed_policy_checks.add('failed policy/rule: %s' % name)
         prefix = ('MediaConch policy check result against policy file'
                   ' {}:'.format(self.policy_file_name))
         if info == 'fail':
             return ('fail', '{} {}'.format(
                 prefix, '; '.join(failed_policy_checks)))
-        else:
-            if not passed_policy_checks:
-                return ('pass', '{} No checks passed, but none failed'
-                        ' either.'.format(prefix))
-            else:
-                return ('pass', '{} All policy checks passed: {}'.format(
-                    prefix, '; '.join(passed_policy_checks)))
+        if passed_policy_checks:
+            return ('pass', '{} All policy checks passed: {}'.format(
+                prefix, '; '.join(passed_policy_checks)))
+        return ('pass', '{} No checks passed, but none failed'
+                ' either.'.format(prefix))
 
     def _get_evt_out_inf_detail_v_0_1(self, policy_checks):
-        failed_policy_checks = []
-        passed_policy_checks = []
-        for name, (out, fie, act, rea) in \
-                policy_checks['policy_checks'].items():
+        failed_policy_checks = set()
+        passed_policy_checks = set()
+        for name, (out, fie, act, rea) in policy_checks[
+                'policy_checks'].items():
             if out == "pass":
-                passed_policy_checks.append(name)
+                passed_policy_checks.add(name)
             else:
-                failed_policy_checks.append(
+                failed_policy_checks.add(
                     'The check "{name}" failed; the actual value for the'
                     ' field "{fie}" was "{act}"; the reason was'
                     ' "{rea}".'.format(
@@ -203,12 +201,11 @@ class MediaConchPolicyCheckerCommand(object):
         if failed_policy_checks:
             return ('fail', '{} {}'.format(
                 prefix, ' '.join(failed_policy_checks)))
-        elif not passed_policy_checks:
-            return ('pass', '{} No checks passed, but none failed'
-                    ' either.'.format(prefix))
-        else:
+        if passed_policy_checks:
             return ('pass', '{} All policy checks passed: {}'.format(
                 prefix, '; '.join(passed_policy_checks)))
+        return ('pass', '{} No checks passed, but none failed'
+                ' either.'.format(prefix))
 
     def _error(self, exc):
         try:
