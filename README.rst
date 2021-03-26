@@ -11,6 +11,7 @@ whether the file passes the policy check.
 .. class:: no-web no-pdf
 
 |build|
+|coverage|
 
 
 Install with Pip::
@@ -48,6 +49,10 @@ To run the tests, make sure tox is installed, then::
     $ tox
 
 
-.. |build|  image:: https://travis-ci.org/artefactual-labs/ammcpc.svg?branch=master
-    :target: https://travis-ci.org/artefactual-labs/ammcpc
+.. |build|  image:: https://github.com/artefactual-labs/ammcpc/actions/workflows/test.yml/badge.svg
+    :target: https://github.com/artefactual-labs/ammcpc/actions/workflows/test.yml
     :alt: Build status of the master branch
+
+.. |coverage|  image:: https://codecov.io/gh/artefactual-labs/ammcpc/branch/master/graph/badge.svg?token=8iFP6qzL6Q
+    :target: https://codecov.io/gh/artefactual-labs/ammcpc
+    :alt: Test coverage of the master branch
