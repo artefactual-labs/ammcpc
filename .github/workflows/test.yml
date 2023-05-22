@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "master"
+      - "dev/update-github-workflow"
 jobs:
   tox:
     name: "Test ${{ matrix.toxenv }}"
