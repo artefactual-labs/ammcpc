@@ -1,13 +1,8 @@
-from __future__ import print_function, unicode_literals
 import json
 import os
 import sys
+from io import StringIO
 from unittest import TestCase
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import StringIO
 
 from ammcpc.ammcpc import MediaConchPolicyCheckerCommand
 
