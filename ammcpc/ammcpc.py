@@ -28,18 +28,17 @@ System dependencies:
 - MediaConch version 16.12
 
 """
-
-from __future__ import print_function, unicode_literals
-from collections import namedtuple
 import json
 import os
 import subprocess
 import sys
 import tempfile
 import uuid
+from collections import namedtuple
+
 from lxml import etree
 
-__version__ = "0.1.3"
+__version__ = "0.2.0"
 
 SUCCESS_CODE = 0
 ERROR_CODE = 1
@@ -53,7 +52,7 @@ class MediaConchException(Exception):
 Parse = namedtuple("Parse", "etree_el stdout")
 
 
-class MediaConchPolicyCheckerCommand(object):
+class MediaConchPolicyCheckerCommand:
     """MC Policy Checker Command runs
     ``mediaconch -mc -fx -p <path_to_policy_xsl_file> <target>``,
     parses the returned XML, and prints out a JSON report summarizing the
@@ -102,7 +101,7 @@ class MediaConchPolicyCheckerCommand(object):
         if self._policy_file_path:
             if not os.path.isfile(self._policy_file_path):
                 raise MediaConchException(
-                    "There is no policy file at {}".format(self._policy_file_path)
+                    f"There is no policy file at {self._policy_file_path}"
                 )
             self.policy_file_name = os.path.basename(self._policy_file_path)
             with open(self._policy_file_path) as filei:
@@ -146,7 +145,7 @@ class MediaConchPolicyCheckerCommand(object):
                     os.unlink(pfp.name)
         except subprocess.CalledProcessError:
             raise MediaConchException(
-                "MediaConch failed when running: %s" % (" ".join(args),)
+                "MediaConch failed when running: {}".format(" ".join(args))
             )
         try:
             return Parse(etree_el=etree.fromstring(output), stdout=output)
@@ -275,7 +274,7 @@ def _parse_policy_check_test(policy_check_el):
 
 def _get_policy_checks_v_0_3(doc):
     policy_checks = {"mc_version": "0.3", "policies": []}
-    root_policy = doc.find(".%smedia/%spolicy" % (NS, NS))
+    root_policy = doc.find(f".{NS}media/{NS}policy")
     if root_policy is None:
         raise MediaConchException("Unable to find a root policy")
     policy_checks["root_policy"] = (
@@ -283,7 +282,7 @@ def _get_policy_checks_v_0_3(doc):
         root_policy.attrib.get("outcome", "No root policy outcome"),
     )
     for el_tname in ("policy", "rule"):
-        path = ".//%s%s" % (NS, el_tname)
+        path = f".//{NS}{el_tname}"
         for policy_el in doc.iterfind(path):
             policy_name = _get_policy_check_name(policy_el)
             policy_checks["policies"].append(
@@ -294,7 +293,7 @@ def _get_policy_checks_v_0_3(doc):
 
 def _get_policy_checks_v_0_1(doc):
     policy_checks = {"mc_version": "0.1", "policy_checks": {}}
-    path = ".%smedia/%spolicyChecks/%scheck" % (NS, NS, NS)
+    path = f".{NS}media/{NS}policyChecks/{NS}check"
     for policy_check_el in doc.iterfind(path):
         policy_check_name = _get_policy_check_name(policy_check_el)
         parse = _parse_policy_check_test(policy_check_el)
