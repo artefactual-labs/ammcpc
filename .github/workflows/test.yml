@@ -47,7 +47,7 @@ jobs:
           pip install tox tox-gh-actions
       - name: "Run tox"
         run: |
-          tox -- --cov ammcpc --cov-config .coveragerc --cov-report xml:coverage.xml
+          tox -- --cov ammcpc --cov-report xml:coverage.xml
       - name: "Upload coverage report"
         if: github.repository == 'artefactual-labs/ammcpc'
         uses: "codecov/codecov-action@v3"
