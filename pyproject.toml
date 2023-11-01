@@ -97,7 +97,7 @@ legacy_tox_ini = """
         3.12: py312
 
     [testenv]
-    deps = -r {toxinidir}/test-requirements.txt
+    deps = -r {toxinidir}/requirements-dev.txt
     commands = pytest {posargs}
 
     [testenv:linting]
