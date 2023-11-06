@@ -20,7 +20,7 @@ description = "Python command line wrapper around MediaConch policy checks."
 requires-python = ">=3.8"
 license = {file = "LICENSE"}
 dependencies = [
-  "lxml~=4.9",
+  "lxml",
 ]
 keywords = [
   "archivematica",
