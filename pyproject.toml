@@ -97,6 +97,7 @@ legacy_tox_ini = """
         3.12: py312
 
     [testenv]
+    skip_install = true
     deps = -r {toxinidir}/requirements-dev.txt
     commands = pytest {posargs}
 
