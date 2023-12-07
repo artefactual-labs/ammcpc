@@ -2,8 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/ammcpc.svg)](https://pypi.python.org/pypi/ammcpc)
 [![GitHub CI](https://github.com/artefactual-labs/ammcpc/actions/workflows/test.yml/badge.svg)](https://github.com/artefactual-labs/ammcpc/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/artefactual-labs/ammcpc/branch/master/graph/badge.svg?token=rNmMA59AqJ)](https://codecov.io/gh/artefactua
-l-labs/ammcpc)
+[![codecov](https://codecov.io/gh/artefactual-labs/ammcpc/branch/master/graph/badge.svg?token=rNmMA59AqJ)](https://codecov.io/gh/artefactual-labs/ammcpc)
 
 This command-line application and python module is a simple wrapper around the
 MediaConch tool which takes a file and a MediaConch policy file as input and
@@ -12,24 +11,24 @@ whether the file passes the policy check.
 
 ## Installation
 
-Install with Pip:
+Install with pip:
 
 ```shell
-    $ pip install ammcpc
+    pip install ammcpc
 ```
 
 Install from source:
 
 ```shell
-    $ python setup.py install
+    python setup.py install
 ```
 
-## usage
+## Usage
 
 Command-line usage:
 
 ```shell
-    $ ammcpc <PATH_TO_FILE> <PATH_TO_POLICY>
+    ammcpc <PATH_TO_FILE> <PATH_TO_POLICY>
 ```
 
 Python usage with a policy file path:
@@ -61,5 +60,5 @@ System dependencies:
 To run the tests, make sure tox is installed, then:
 
 ```shell
-    $ tox
+    tox
 ```
