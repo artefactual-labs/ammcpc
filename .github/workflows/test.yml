@@ -32,16 +32,9 @@ jobs:
             requirements-dev.txt
       - name: "Install OS packages"
         run: |
+          wget https://mediaarea.net/repo/deb/repo-mediaarea_1.0-24_all.deb
           sudo apt-get --quiet update
-          sudo apt-get install --quiet --yes libmms0 libjansson4 libcurl3-gnutls libxml2 libxslt1.1
-          wget https://mediaarea.net/download/binary/libzen0/0.4.37/libzen0v5_0.4.37-1_amd64.xUbuntu_18.04.deb
-          sudo dpkg -i libzen0v5_0.4.37-1_amd64.xUbuntu_18.04.deb
-          wget https://mediaarea.net/download/binary/libmediainfo0/18.05/libmediainfo0v5_18.05-1_amd64.xUbuntu_18.04.deb
-          sudo dpkg -i libmediainfo0v5_18.05-1_amd64.xUbuntu_18.04.deb
-          wget http://mirrors.kernel.org/ubuntu/pool/main/libe/libevent/libevent-2.1-6_2.1.8-stable-4build1_amd64.deb
-          sudo dpkg -i libevent-2.1-6_2.1.8-stable-4build1_amd64.deb
-          wget https://mediaarea.net/download/binary/mediaconch/18.03.2/mediaconch_18.03.2-1_amd64.xUbuntu_18.04.deb
-          sudo dpkg -i mediaconch_18.03.2-1_amd64.xUbuntu_18.04.deb
+          sudo apt-get install --quiet --yes mediaconch
       - name: "Install tox"
         run: |
           python -m pip install --upgrade pip
