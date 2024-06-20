@@ -38,6 +38,8 @@ pytest==8.2.2
     #   pytest-cov
 pytest-cov==5.0.0
     # via ammcpc (pyproject.toml)
+ruff==0.4.9
+    # via ammcpc (pyproject.toml)
 tomli==2.0.1
     # via
     #   build

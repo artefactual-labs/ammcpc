@@ -56,10 +56,11 @@ ammcpc = "ammcpc.ammcpc:main"
 
 [project.optional-dependencies]
 dev = [
-  "pytest",
-  "pytest-cov",
   "coverage",
   "pip-tools",
+  "pytest-cov",
+  "pytest",
+  "ruff",
 ]
 
 [tool.setuptools.dynamic]
