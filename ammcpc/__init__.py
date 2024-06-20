@@ -1,1 +1,5 @@
-from .ammcpc import MediaConchPolicyCheckerCommand  # noqa: F401
+from .ammcpc import MediaConchPolicyCheckerCommand
+
+__all__ = [
+    MediaConchPolicyCheckerCommand,
+]

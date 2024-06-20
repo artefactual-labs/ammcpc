@@ -28,6 +28,7 @@ System dependencies:
 - MediaConch version 16.12
 
 """
+
 import json
 import os
 import subprocess
@@ -152,7 +153,7 @@ class MediaConchPolicyCheckerCommand:
         except etree.XMLSyntaxError:
             raise MediaConchException(
                 "The MediaConch command failed when attempting to parse the"
-                " XML output by MediaConch:\n\n {}".format(output)
+                f" XML output by MediaConch:\n\n {output}"
             )
 
     def _get_evt_out_inf_detail(self, policy_checks):
@@ -177,8 +178,9 @@ class MediaConchPolicyCheckerCommand:
                 passed_policy_checks.add(name)
             else:
                 failed_policy_checks.add("failed policy/rule: %s" % name)
-        prefix = "MediaConch policy check result against policy file" " {}:".format(
-            self.policy_file_name
+        prefix = (
+            "MediaConch policy check result against policy file"
+            f" {self.policy_file_name}:"
         )
         if info == "fail":
             return ("fail", "{} {}".format(prefix, "; ".join(failed_policy_checks)))
@@ -191,7 +193,7 @@ class MediaConchPolicyCheckerCommand:
             )
         return (
             "pass",
-            "{} No checks passed, but none failed" " either.".format(prefix),
+            f"{prefix} No checks passed, but none failed" " either.",
         )
 
     def _get_evt_out_inf_detail_v_0_1(self, policy_checks):
@@ -202,12 +204,13 @@ class MediaConchPolicyCheckerCommand:
                 passed_policy_checks.add(name)
             else:
                 failed_policy_checks.add(
-                    'The check "{name}" failed; the actual value for the'
-                    ' field "{fie}" was "{act}"; the reason was'
-                    ' "{rea}".'.format(name=name, fie=fie, act=act, rea=rea)
+                    f'The check "{name}" failed; the actual value for the'
+                    f' field "{fie}" was "{act}"; the reason was'
+                    f' "{rea}".'
                 )
-        prefix = "MediaConch policy check result against policy file" " {}:".format(
-            self.policy_file_name
+        prefix = (
+            "MediaConch policy check result against policy file"
+            f" {self.policy_file_name}:"
         )
         if failed_policy_checks:
             return ("fail", "{} {}".format(prefix, " ".join(failed_policy_checks)))
@@ -220,7 +223,7 @@ class MediaConchPolicyCheckerCommand:
             )
         return (
             "pass",
-            "{} No checks passed, but none failed" " either.".format(prefix),
+            f"{prefix} No checks passed, but none failed" " either.",
         )
 
     def _error(self, exc):
@@ -313,8 +316,7 @@ def _get_policy_checks(doc):
         return _get_policy_checks_v_0_1(doc)
     else:
         raise MediaConchException(
-            "Unable to parse MediaConch XML files with version"
-            ' "{}"'.format(mc_xml_vrsn)
+            "Unable to parse MediaConch XML files with version" f' "{mc_xml_vrsn}"'
         )
 
 
