@@ -3,7 +3,6 @@ import os
 
 from ammcpc.ammcpc import MediaConchPolicyCheckerCommand
 
-
 HERE = os.path.dirname(os.path.realpath(__file__))
 # For the purposes of the fails.mkv and passes.mkv files, both policy files
 # behave the same. At some point MediaConch switched over to the more readable
