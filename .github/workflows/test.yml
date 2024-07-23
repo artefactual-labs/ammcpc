@@ -30,11 +30,6 @@ jobs:
           cache-dependency-path: |
             requirements.txt
             requirements-dev.txt
-      - name: "Install OS packages"
-        run: |
-          wget https://mediaarea.net/repo/deb/repo-mediaarea_1.0-24_all.deb
-          sudo apt-get --quiet update
-          sudo apt-get install --quiet --yes mediaconch
       - name: "Install tox"
         run: |
           python -m pip install --upgrade pip
