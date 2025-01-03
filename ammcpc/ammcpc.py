@@ -39,7 +39,7 @@ from collections import namedtuple
 
 from lxml import etree
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 SUCCESS_CODE = 0
 ERROR_CODE = 1
