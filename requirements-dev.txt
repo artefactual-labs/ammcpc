@@ -38,7 +38,7 @@ pytest==8.3.4
     #   pytest-cov
 pytest-cov==6.0.0
     # via ammcpc (pyproject.toml)
-ruff==0.8.5
+ruff==0.9.1
     # via ammcpc (pyproject.toml)
 tomli==2.2.1
     # via
@@ -54,5 +54,5 @@ zipp==3.21.0
 # The following packages are considered to be unsafe in a requirements file:
 pip==24.3.1
     # via pip-tools
-setuptools==75.6.0
+setuptools==75.8.0
     # via pip-tools
