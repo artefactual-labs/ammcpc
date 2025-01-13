@@ -193,7 +193,7 @@ class MediaConchPolicyCheckerCommand:
             )
         return (
             "pass",
-            f"{prefix} No checks passed, but none failed" " either.",
+            f"{prefix} No checks passed, but none failed either.",
         )
 
     def _get_evt_out_inf_detail_v_0_1(self, policy_checks):
@@ -223,7 +223,7 @@ class MediaConchPolicyCheckerCommand:
             )
         return (
             "pass",
-            f"{prefix} No checks passed, but none failed" " either.",
+            f"{prefix} No checks passed, but none failed either.",
         )
 
     def _error(self, exc):
@@ -316,7 +316,7 @@ def _get_policy_checks(doc):
         return _get_policy_checks_v_0_1(doc)
     else:
         raise MediaConchException(
-            "Unable to parse MediaConch XML files with version" f' "{mc_xml_vrsn}"'
+            f'Unable to parse MediaConch XML files with version "{mc_xml_vrsn}"'
         )
 
 
