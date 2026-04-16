@@ -57,10 +57,13 @@ ammcpc = "ammcpc.ammcpc:main"
 [project.optional-dependencies]
 dev = [
   "coverage",
+  "mypy",
   "pip-tools",
   "pytest-cov",
   "pytest",
   "ruff",
+  "tox",
+  "types-lxml"
 ]
 
 [tool.setuptools.dynamic]
@@ -85,6 +88,10 @@ ignore = [
 
 [tool.ruff.lint.isort]
 force-single-line = true
+
+[tool.mypy]
+strict = true
+files = ["ammcpc", "tests"]
 
 [tool.pytest.ini_options]
 python_files = [
