@@ -36,6 +36,8 @@ import sys
 import tempfile
 import uuid
 from collections import namedtuple
+from typing import Literal
+from typing import TypedDict
 
 from lxml import etree
 
@@ -51,6 +53,22 @@ class MediaConchException(Exception):
 
 
 Parse = namedtuple("Parse", "etree_el stdout")
+PolicyOutcome = tuple[str, str]
+PolicyCheckResult = tuple[str, str, str, str]
+
+
+class PolicyChecksV03(TypedDict):
+    mc_version: Literal["0.3"]
+    policies: list[PolicyOutcome]
+    root_policy: PolicyOutcome
+
+
+class PolicyChecksV01(TypedDict):
+    mc_version: Literal["0.1"]
+    policy_checks: dict[str, PolicyCheckResult]
+
+
+PolicyChecks = PolicyChecksV03 | PolicyChecksV01
 
 
 class MediaConchPolicyCheckerCommand:
@@ -65,13 +83,19 @@ class MediaConchPolicyCheckerCommand:
         >>> checker.check('/path/to/file-to-be-checked')
     """
 
-    def __init__(self, policy_file_path=None, policy=None, policy_file_name=None):
+    def __init__(
+        self,
+        policy_file_path: str | None = None,
+        policy: str | None = None,
+        policy_file_name: str | None = None,
+    ) -> None:
         self._policy_file_path = policy_file_path
         self._policy = policy
         self._policy_file_name = policy_file_name
-        self.policy_file_name = None
+        self.policy: str | None = None
+        self.policy_file_name: str | None = None
 
-    def check(self, target):
+    def check(self, target: str) -> int:
         """Return 0 if MediaConch can successfully assess whether the file at
         `target` passes the policy checks that are relevant to it, given its
         purpose and the state of the FPR. Parse the XML output by MediaConch
@@ -98,7 +122,7 @@ class MediaConchPolicyCheckerCommand:
         except MediaConchException as exc:
             return self._error(exc)
 
-    def _validate(self):
+    def _validate(self) -> None:
         if self._policy_file_path:
             if not os.path.isfile(self._policy_file_path):
                 raise MediaConchException(
@@ -116,7 +140,7 @@ class MediaConchPolicyCheckerCommand:
                 " the text of the policy and its name as strings."
             )
 
-    def _parse_mediaconch_output(self, target):
+    def _parse_mediaconch_output(self, target: str) -> Parse:
         """Run ``mediaconch -mc -fx -p <path_to_policy_xsl_file>
         <target>`` against the file at ``path_to_target`` and return an lxml
         etree parse of the output.
@@ -133,10 +157,14 @@ class MediaConchPolicyCheckerCommand:
                 ]
                 output = subprocess.check_output(args)
             else:
+                if self.policy is None or self.policy_file_name is None:
+                    raise MediaConchException(
+                        "Internal error: policy state was not validated before parsing."
+                    )
                 ext = os.path.splitext(self.policy_file_name)[1]
                 pfp = tempfile.NamedTemporaryFile(suffix=ext, delete=False)
                 try:
-                    pfp.write(self._policy.encode("utf8"))
+                    pfp.write(self.policy.encode("utf8"))
                     pfp.close()
                     args = ["mediaconch", "-mc", "-fx", "-p", pfp.name, target]
                     output = subprocess.check_output(args)
@@ -151,12 +179,13 @@ class MediaConchPolicyCheckerCommand:
         try:
             return Parse(etree_el=etree.fromstring(output), stdout=output)
         except etree.XMLSyntaxError:
+            output_s = output.decode(errors="backslashreplace")
             raise MediaConchException(
                 "The MediaConch command failed when attempting to parse the"
-                f" XML output by MediaConch:\n\n {output}"
+                f" XML output by MediaConch:\n\n {output_s}"
             )
 
-    def _get_evt_out_inf_detail(self, policy_checks):
+    def _get_evt_out_inf_detail(self, policy_checks: PolicyChecks) -> tuple[str, str]:
         """Return a 2-tuple of info and detail.
         - info: 'pass' or 'fail'
         - detail: human-readable string indicating which policy checks
@@ -167,7 +196,9 @@ class MediaConchPolicyCheckerCommand:
             return self._get_evt_out_inf_detail_v_0_3(policy_checks)
         return self._get_evt_out_inf_detail_v_0_1(policy_checks)
 
-    def _get_evt_out_inf_detail_v_0_3(self, policy_checks):
+    def _get_evt_out_inf_detail_v_0_3(
+        self, policy_checks: PolicyChecksV03
+    ) -> tuple[str, str]:
         failed_policy_checks = set()
         passed_policy_checks = set()
         info = "fail"
@@ -196,7 +227,9 @@ class MediaConchPolicyCheckerCommand:
             f"{prefix} No checks passed, but none failed either.",
         )
 
-    def _get_evt_out_inf_detail_v_0_1(self, policy_checks):
+    def _get_evt_out_inf_detail_v_0_1(
+        self, policy_checks: PolicyChecksV01
+    ) -> tuple[str, str]:
         failed_policy_checks = set()
         passed_policy_checks = set()
         for name, (out, fie, act, rea) in policy_checks["policy_checks"].items():
@@ -226,7 +259,7 @@ class MediaConchPolicyCheckerCommand:
             f"{prefix} No checks passed, but none failed either.",
         )
 
-    def _error(self, exc):
+    def _error(self, exc: MediaConchException) -> int:
         try:
             pfn = self.policy_file_name
             pol = self.policy
@@ -247,12 +280,14 @@ class MediaConchPolicyCheckerCommand:
         return ERROR_CODE
 
 
-def _get_policy_check_name(policy_check_el):
+def _get_policy_check_name(policy_check_el: etree._Element) -> str:
     return policy_check_el.attrib.get("name", "Unnamed Check %s" % uuid.uuid4())
 
 
-def _parse_policy_check_test(policy_check_el):
-    """Return a 3-tuple parse of the <test> element of the policy <check>
+def _parse_policy_check_test(
+    policy_check_el: etree._Element,
+) -> PolicyCheckResult | None:
+    """Return a 4-tuple parse of the <test> element of the policy <check>
     element.
 
     - El1 is outcome ("pass" or "fail" or other?)
@@ -275,15 +310,19 @@ def _parse_policy_check_test(policy_check_el):
     )
 
 
-def _get_policy_checks_v_0_3(doc):
-    policy_checks = {"mc_version": "0.3", "policies": []}
+def _get_policy_checks_v_0_3(doc: etree._Element) -> PolicyChecksV03:
     root_policy = doc.find(f".{NS}media/{NS}policy")
     if root_policy is None:
         raise MediaConchException("Unable to find a root policy")
-    policy_checks["root_policy"] = (
+    root_policy_outcome: PolicyOutcome = (
         root_policy.attrib.get("name", "No root policy name"),
         root_policy.attrib.get("outcome", "No root policy outcome"),
     )
+    policy_checks: PolicyChecksV03 = {
+        "mc_version": "0.3",
+        "policies": [],
+        "root_policy": root_policy_outcome,
+    }
     for el_tname in ("policy", "rule"):
         path = f".//{NS}{el_tname}"
         for policy_el in doc.iterfind(path):
@@ -294,8 +333,8 @@ def _get_policy_checks_v_0_3(doc):
     return policy_checks
 
 
-def _get_policy_checks_v_0_1(doc):
-    policy_checks = {"mc_version": "0.1", "policy_checks": {}}
+def _get_policy_checks_v_0_1(doc: etree._Element) -> PolicyChecksV01:
+    policy_checks: PolicyChecksV01 = {"mc_version": "0.1", "policy_checks": {}}
     path = f".{NS}media/{NS}policyChecks/{NS}check"
     for policy_check_el in doc.iterfind(path):
         policy_check_name = _get_policy_check_name(policy_check_el)
@@ -305,7 +344,7 @@ def _get_policy_checks_v_0_1(doc):
     return policy_checks
 
 
-def _get_policy_checks(doc):
+def _get_policy_checks(doc: etree._Element) -> PolicyChecks:
     """Get all of the policy check names and outcomes from the policy check
     output file parsed as ``doc``.
     """
@@ -320,7 +359,7 @@ def _get_policy_checks(doc):
         )
 
 
-def main():
+def main() -> None:
     target = sys.argv[1]
     policy = sys.argv[2]
     policy_checker = MediaConchPolicyCheckerCommand(policy_file_path=policy)

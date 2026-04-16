@@ -1,5 +1,7 @@
 import json
 import os
+import pathlib
+from collections.abc import Generator
 from unittest import mock
 
 import pytest
@@ -207,7 +209,7 @@ XML_PASSED_CHECK_OUTPUT = """
 
 
 @pytest.fixture
-def mediaconch_fails():
+def mediaconch_fails() -> Generator[None, None, None]:
     with mock.patch(
         "subprocess.check_output",
         side_effect=[
@@ -219,7 +221,7 @@ def mediaconch_fails():
 
 
 @pytest.fixture
-def mediaconch_passes():
+def mediaconch_passes() -> Generator[None, None, None]:
     with mock.patch(
         "subprocess.check_output",
         side_effect=[
@@ -230,7 +232,9 @@ def mediaconch_passes():
         yield
 
 
-def test_check_bad_file(mediaconch_fails, capsys):
+def test_check_bad_file(
+    mediaconch_fails: None, capsys: pytest.CaptureFixture[str]
+) -> None:
     """Expect a policy check on a failing file to return a 0 exit code and
     print to stdout a JSON object with a 'eventOutcomeInformation'
     attribute whose value is 'fail'.
@@ -253,7 +257,9 @@ def test_check_bad_file(mediaconch_fails, capsys):
         assert output["policy"] == filei.read()
 
 
-def test_check_bad_file_str_pol(mediaconch_fails, capsys):
+def test_check_bad_file_str_pol(
+    mediaconch_fails: None, capsys: pytest.CaptureFixture[str]
+) -> None:
     """Same as ``test_check_bad_file`` except that the policy is passed as
     a string.
     """
@@ -281,7 +287,9 @@ def test_check_bad_file_str_pol(mediaconch_fails, capsys):
     assert output["policy"] == policy
 
 
-def test_check_good_file(mediaconch_passes, capsys):
+def test_check_good_file(
+    mediaconch_passes: None, capsys: pytest.CaptureFixture[str]
+) -> None:
     """Expect a policy check on a passing file to return a 0 exit code and
     print to stdout a JSON object with a 'eventOutcomeInformation'
     attribute whose value is 'pass'.
@@ -304,7 +312,9 @@ def test_check_good_file(mediaconch_passes, capsys):
         assert output["policy"] == filei.read()
 
 
-def test_check_good_file_str_pol(mediaconch_passes, capsys):
+def test_check_good_file_str_pol(
+    mediaconch_passes: None, capsys: pytest.CaptureFixture[str]
+) -> None:
     """Same as ``test_check_good_file`` except that the policy is passed as
     a string.
     """
@@ -332,7 +342,7 @@ def test_check_good_file_str_pol(mediaconch_passes, capsys):
     assert output["policy"] == policy
 
 
-def test_no_policy(capsys, tmp_path):
+def test_no_policy(capsys: pytest.CaptureFixture[str], tmp_path: pathlib.Path) -> None:
     """Expect a 1 exit code and a fail outcome when the policy file does
     not exist.
     """
