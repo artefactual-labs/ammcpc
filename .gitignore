@@ -8,5 +8,6 @@ dist/
 __pycache__/
 *.pyc
 READMEPRIVATE.rst
-.tox
+.venv/
 .coverage
+coverage.xml
