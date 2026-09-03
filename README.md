@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/ammcpc.svg)](https://pypi.python.org/pypi/ammcpc)
 [![GitHub CI](https://github.com/artefactual-labs/ammcpc/actions/workflows/test.yml/badge.svg)](https://github.com/artefactual-labs/ammcpc/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/artefactual-labs/ammcpc/branch/master/graph/badge.svg?token=rNmMA59AqJ)](https://codecov.io/gh/artefactual-labs/ammcpc)
+[![codecov](https://codecov.io/gh/artefactual-labs/ammcpc/branch/main/graph/badge.svg?token=rNmMA59AqJ)](https://codecov.io/gh/artefactual-labs/ammcpc)
 
 This command-line application and python module is a simple wrapper around the
 MediaConch tool which takes a file and a MediaConch policy file as input and
